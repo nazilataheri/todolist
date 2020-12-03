@@ -29,6 +29,7 @@ app.get("/", async function (req, res) {
 });
 
 app.get("/:customListName", async function (req, res) {
+  const initialContent = serverRender();
   const customListName = _.capitalize(req.params.customListName);
   const foundList = await dbUtility.findList(customListName);
   if (!foundList) {
@@ -39,6 +40,7 @@ app.get("/:customListName", async function (req, res) {
     res.render("list", {
       listTitle: foundList.name,
       newListItems: foundList.items,
+      initialContent,
     });
   }
 });
