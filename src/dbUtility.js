@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const dbUtility = function () {
-  mongoose.connect(process.env.DB_HOST + process.env.DB_NAME, {
+const dbUtility = (function () {
+  mongoose.connect("mongodb://localhost:27017/" + "todoListDB", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
@@ -35,7 +35,7 @@ const dbUtility = function () {
     try {
       return await Item.find({});
     } catch (err) {
-      console.log(err);
+      console.error(err);
       throw err;
     }
   };
@@ -55,7 +55,7 @@ const dbUtility = function () {
   const findItemByIdAndRemove = async function (id) {
     return await Item.findByIdAndRemove(id, function (err) {
       if (err) {
-        console.log(err);
+        console.error(err);
       } else {
         console.log("Successfuly removed!");
       }
@@ -70,14 +70,16 @@ const dbUtility = function () {
       );
       return foundList;
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
-  const saveTask = function () {
+  const saveTask = function (newItem) {
     const item = new Item({
       name: newItem,
     });
-    item.save();
+    item.save(function (err) {
+      console.error(err);
+    });
   };
   const findListAndSaveTask = async function (listName, newItem) {
     const item = new Item({
@@ -99,6 +101,5 @@ const dbUtility = function () {
     findItemByIdAndRemove: findItemByIdAndRemove,
     findListAndRemoveItem: findListAndRemoveItem,
   };
-};
-
-module.exports = dbUtility();
+})();
+module.exports = dbUtility;

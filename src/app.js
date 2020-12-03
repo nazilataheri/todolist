@@ -1,8 +1,9 @@
-require("dotenv").config();
+const dotenv = require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
-const dbUtility = require("./dbUtility");
 const _ = require("lodash");
+const dbUtility = require("./dbUtility");
+const serverRender = require("./serverRender");
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", async function (req, res) {
+  const initialContent = serverRender();
   const allTasks = await dbUtility.findAllTasks();
 
   if (allTasks.length === 0) {
@@ -21,6 +23,7 @@ app.get("/", async function (req, res) {
     res.render("list", {
       listTitle: "Today",
       newListItems: allTasks,
+      initialContent,
     });
   }
 });
@@ -32,7 +35,7 @@ app.get("/:customListName", async function (req, res) {
     dbUtility.addNewList(customListName);
     res.redirect("/" + customListName);
   } else {
-    console.log("List Exists!");
+    //console.log("List Exists!");
     res.render("list", {
       listTitle: foundList.name,
       newListItems: foundList.items,
@@ -57,7 +60,7 @@ app.post("/", async function (req, res) {
 app.post("/delete", async function (req, res) {
   const checkedItemId = req.body.doneItem;
   const listName = req.body.listName;
-  console.log(req.body.listName);
+  // console.log(req.body.listName);
   if (listName === "Today") {
     await dbUtility.findItemByIdAndRemove(checkedItemId);
     res.redirect("/");
