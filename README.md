@@ -1,4 +1,4 @@
-# ToDolist
+# ToDoList
 
 This is a todo list implemented with React, EJS, MongoDB and nodeJS.
 
