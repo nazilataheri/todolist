@@ -22,5 +22,8 @@ mongod
 Now, start the development environment with the following command:
 
 ```
+npm webpack
+```
+```
 npm run dev
 ```
